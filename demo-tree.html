@@ -1932,31 +1932,63 @@ function showGroup(gid){
   glist.children[idx].classList.add("active");
   const g = d.groups[idx];
   const ids = new Set(g.nodes.map(n => n.id));
-  const elements = [];
-  g.nodes.forEach(nd => elements.push({
-    data: { id: nd.id, label: nd.n, color: gColor[g.id], diff: nd.diff }
-  }));
-  let eid = 0;
+  // 计算依赖深度（前置链长度，环保护）——思维导图按深度渐变着色
+  const ins = {}; ids.forEach(id => ins[id] = []);
+  const intraEdges = [];
   (d.edges || []).forEach(e => {
     const s = Array.isArray(e) ? e[0] : e.from, t = Array.isArray(e) ? e[1] : e.to;
-    if (ids.has(s) && ids.has(t)) elements.push({ data: { id: "e" + (eid++), source: s, target: t } });
+    if (ids.has(s) && ids.has(t)){ intraEdges.push([s, t]); ins[t].push(s); }
   });
+  const depth = {};
+  const calcD = (id, vis) => {
+    if (vis.has(id)) return 0;
+    if (depth[id] !== undefined) return depth[id];
+    vis.add(id);
+    depth[id] = ins[id].length ? Math.max(...ins[id].map(p => calcD(p, vis))) + 1 : 0;
+    vis.delete(id);
+    return depth[id];
+  };
+  g.nodes.forEach(n => calcD(n.id, new Set()));
+  const maxD = Math.max(...g.nodes.map(n => depth[n.id]));
+  // 思维导图着色：并列根深色 → 叶子浅色
+  const fill = (hex, dp) => {
+    const r = maxD > 0 ? dp / maxD * 0.6 : 0;
+    const n = parseInt(hex.slice(1), 16);
+    const mix = c => Math.round(c + (255 - c) * r);
+    return `rgb(${mix((n >> 16) & 255)},${mix((n >> 8) & 255)},${mix(n & 255)})`;
+  };
+  const elements = [];
+  // 板块名 = 思维导图根节点
+  elements.push({ data: { id: "root-" + g.id, label: g.name, color: gColor[g.id], isRoot: true } });
+  g.nodes.forEach(nd => elements.push({
+    data: { id: nd.id, label: nd.n, color: gColor[g.id], fill: fill(gColor[g.id], depth[nd.id]) }
+  }));
+  let eid = 0;
+  // 根节点 → 并列根知识点（深度0）
+  g.nodes.forEach(nd => { if (depth[nd.id] === 0) elements.push({ data: { id: "re" + (eid++), source: "root-" + g.id, target: nd.id, isRootEdge: true, color: gColor[g.id] } }); });
+  // 组内依赖边
+  intraEdges.forEach(([s, t]) => elements.push({ data: { id: "e" + (eid++), source: s, target: t } }));
   if (cy) cy.destroy();
   cy = cytoscape({
     container: document.getElementById("cy"),
     elements,
-    layout: { name: "dagre", rankDir: "LR", nodesep: 22, ranksep: 90, padding: 30 },
+    layout: { name: "dagre", rankDir: "TB", nodesep: 26, ranksep: 115, padding: 40 },
     wheelSensitivity: 0.2, minZoom: 0.02, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
-        "background-color": "#fff", "border-color": "data(color)", "border-width": 2,
-        "shape": "round-rectangle", "width": 130, "height": 34, "label": "data(label)",
+        "background-color": "data(fill)", "border-color": "data(color)", "border-width": 1.8,
+        "shape": "round-rectangle", "width": 128, "height": 34, "label": "data(label)",
         "font-size": 12, "color": "#1a2332", "text-valign": "center", "text-halign": "center",
         "overlay-opacity": 0 } },
+      { selector: "node[isRoot='true']", style: {
+        "background-color": "data(color)", "color": "#fff", "font-size": 17, "font-weight": 700,
+        "shape": "round-rectangle", "width": 168, "height": 42, "border-width": 0,
+        "text-valign": "center", "text-halign": "center", "overlay-opacity": 0 } },
       { selector: "edge", style: {
-        "curve-style": "bezier", "width": 1.6, "line-color": "#b9c0cc",
-        "target-arrow-shape": "triangle", "target-arrow-color": "#b9c0cc", "arrow-scale": 0.9,
-        "opacity": 0.8 } },
+        "curve-style": "bezier", "width": 1.7, "line-color": "#c9cfd9",
+        "target-arrow-shape": "none", "opacity": 0.75 } },
+      { selector: "edge[isRootEdge='true']", style: {
+        "curve-style": "bezier", "width": 2.4, "line-color": "data(color)", "opacity": 0.9 } },
       { selector: ".dim", style: { "opacity": 0.12 } },
       { selector: ".hl", style: { "border-width": 3.5, "border-color": "#ffd54f", "z-index": 20 } },
     ],
@@ -1964,19 +1996,24 @@ function showGroup(gid){
   cy.fit(undefined, 50);
   window.cy = cy; // 便于调试与外部扩展
   document.getElementById("stats").textContent =
-    `${g.name} · ${g.nodes.length} 知识点 · ${elements.length - g.nodes.length} 依赖边`;
+    `${g.name} · ${g.nodes.length} 知识点 · ${intraEdges.length} 依赖边`;
   bindInteractions();
 }
 
 // 交互：悬停高亮前后置链、点击详情
 function bindInteractions(){
   cy.on("mouseover", "node", evt => {
-    const hit = neighbors(evt.target.id());
+    const n = evt.target;
+    if (n.data("isRoot")){ cy.elements().removeClass("dim hl"); return; }
+    const hit = neighbors(n.id());
     cy.elements().removeClass("hl");
-    cy.nodes().forEach(n => n.addClass(hit.has(n.id()) ? "hl" : "dim"));
+    cy.nodes().forEach(x => x.addClass(hit.has(x.id()) ? "hl" : "dim"));
   });
   cy.on("mouseout", "node", () => cy.elements().removeClass("dim hl"));
-  cy.on("tap", "node", evt => showDetail(evt.target.id()));
+  cy.on("tap", "node", evt => {
+    const n = evt.target;
+    if (!n.data("isRoot")) showDetail(n.id());
+  });
 }
 function neighbors(id){
   const hit = new Set([id]);

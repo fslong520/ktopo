@@ -2089,6 +2089,21 @@ function showGroup(gid){
       x: pan.x + (vw * 0.42 - rp.x),
       y: pan.y + (vh * 0.18 - rp.y)
     });
+    // 贝塞尔控制点：方向依源→目标水平位移，左右均衡弯曲
+    cy.edges().forEach(e => {
+      if (e.data("isRootEdge")) return;
+      const s = e.source().renderedPosition(), t = e.target().renderedPosition();
+      const dx = t.x - s.x, dy = t.y - s.y;
+      let side;
+      if (Math.abs(dx) < 0.001) {
+        // 纯垂直边：依边 id 交替左右
+        side = (parseInt(e.id().replace(/\D/g, "")) || 0) % 2 === 0 ? 1 : -1;
+      } else {
+        side = dx > 0 ? 1 : -1; // 目标在右→右弯，在左→左弯
+      }
+      e.data({ "control-point-distances": [26 * side], "control-point-weights": [0.5] });
+    });
+    cy.style().update(); // 应用新控制点
   });
   window.cy = cy; // 便于调试与外部扩展
   // 统计条：板块色点 + 名称 + 计数 + 难度条

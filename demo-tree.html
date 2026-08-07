@@ -8,33 +8,66 @@
 <script src="https://unpkg.com/cytoscape-dagre/dist/cytoscape-dagre.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;overflow:hidden;height:100vh;display:flex;}
-  #sidebar{flex:0 0 220px;background:#fff;border-right:1px solid #e2e6ee;overflow-y:auto;padding:14px 10px;z-index:5;}
-  #sidebar h3{font-size:13px;color:#888;margin:0 8px 10px;}
-  #sidebar .gitem{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;
-    font-size:13px;color:#1a2332;transition:background .15s;margin-bottom:2px;}
-  #sidebar .gitem:hover{background:#f2f4f9;}
-  #sidebar .gitem.active{background:#eef1fb;font-weight:600;}
-  #sidebar .gitem .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto;}
-  #sidebar .gitem small{margin-left:auto;color:#aab;font-size:11px;}
-  #cy{flex:1;background:radial-gradient(circle at 1px 1px,#e3e7ee 1px,transparent 1px) 0 0/22px 22px,#f7f8fa;}
-  .stats{position:fixed;left:238px;top:12px;background:rgba(255,255,255,.94);border:1px solid #e2e6ee;
-    border-radius:10px;padding:6px 12px;font-size:12px;color:#6b7686;z-index:6;box-shadow:0 2px 10px rgba(0,0,0,.06);}
-  #detail{position:fixed;right:0;top:0;bottom:0;width:290px;background:#fff;border-left:1px solid #e2e6ee;
-    box-shadow:-3px 0 12px rgba(0,0,0,.07);padding:18px 16px;overflow:auto;transform:translateX(105%);
+  body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;overflow:hidden;height:100vh;display:flex;background:#0f1115;}
+  #sidebar{flex:0 0 238px;background:linear-gradient(180deg,#fdfdff,#eef1f8);border-right:1px solid #e3e7f0;
+    overflow-y:auto;padding:18px 14px;z-index:5;}
+  #sidebar h3{font-size:13px;color:#8792a6;margin:0 6px 14px;font-weight:700;letter-spacing:.5px;
+    display:flex;align-items:center;gap:7px;}
+  #sidebar h3 .ic{width:4px;height:15px;border-radius:2px;background:linear-gradient(180deg,#5b8def,#7c4dff);}
+  #sidebar .gitem{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;cursor:pointer;
+    font-size:14px;color:#2c3a55;font-weight:600;transition:all .15s;margin-bottom:4px;border:1px solid transparent;}
+  #sidebar .gitem:hover{background:#fff;box-shadow:0 4px 14px rgba(50,72,120,.08);}
+  #sidebar .gitem.active{background:#fff;border-color:#cfe0ff;box-shadow:0 6px 18px rgba(60,100,220,.15);color:#23304d;}
+  #sidebar .gitem .dot{width:12px;height:12px;border-radius:5px;flex:0 0 auto;}
+  #sidebar .gitem small{margin-left:auto;color:#8d99af;font-size:11px;background:#eef1f7;border-radius:20px;padding:1px 9px;font-weight:700;}
+  .legend{background:rgba(255,255,255,.75);border:1px solid #e7ebf3;border-radius:12px;padding:11px 12px;margin-top:14px;}
+  .legend .lt{font-size:12px;color:#7a8498;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+  .lt .ic{width:4px;height:13px;border-radius:2px;background:linear-gradient(180deg,#2e9e5b,#e8871e,#d64545);}
+  .heat{display:flex;gap:2px;height:16px;border-radius:6px;overflow:hidden;margin-bottom:7px;}
+  .heat div{flex:1;}
+  .heatlab{display:flex;justify-content:space-between;font-size:10px;color:#9aa4b8;margin-bottom:9px;}
+  .lvrow{display:flex;flex-direction:column;gap:6px;}
+  .lvrow .lv{display:flex;align-items:center;gap:8px;font-size:12px;color:#4a5a70;}
+  .lv .chip{width:14px;height:14px;border-radius:5px;flex:0 0 auto;}
+  #cy{flex:1;position:relative;overflow:hidden;
+    background:radial-gradient(circle at 1px 1px,#dde3ef 1px,transparent 1px) 0 0/26px 26px,#f3f5fb;}
+  .lvlchip{position:absolute;padding:1px 8px;border-radius:9px;font-size:10px;font-weight:700;color:#fff;
+    z-index:30;box-shadow:0 3px 7px rgba(0,0,0,.2);pointer-events:none;letter-spacing:.5px;}
+  .stats{position:fixed;left:252px;top:18px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+    border:1px solid #e3e7f0;border-radius:14px;padding:9px 18px;font-size:12px;color:#55607a;z-index:6;
+    box-shadow:0 6px 24px rgba(40,60,110,.12);display:flex;align-items:center;gap:12px;}
+  .stats .dotbar{width:12px;height:12px;border-radius:4px;flex:0 0 auto;}
+  .stats .t{font-weight:800;font-size:15px;color:#22304a;}
+  .stats .s{color:#9aa4b8;font-size:11px;margin-top:2px;}
+  #detail{position:fixed;right:0;top:0;bottom:0;width:300px;background:#fff;border-left:1px solid #e3e7f0;
+    box-shadow:-3px 0 16px rgba(0,0,0,.07);padding:20px 18px;overflow:auto;transform:translateX(105%);
     transition:transform .25s;z-index:10;}
   #detail.open{transform:translateX(0);}
-  #detail h2{font-size:15px;margin-bottom:10px;}
+  #detail h2{font-size:16px;margin-bottom:12px;padding-right:26px;}
   #detail .kv{display:flex;gap:8px;margin:6px 0;font-size:13px;}
-  #detail .k{flex:0 0 50px;color:#888;}
-  #detail h3{font-size:12px;color:#888;margin:14px 0 6px;border-left:3px solid #7c4dff;padding-left:6px;}
+  #detail .k{flex:0 0 54px;color:#8a93a6;}
+  #detail .lvtag{display:inline-block;padding:1px 9px;border-radius:7px;font-size:12px;font-weight:700;color:#fff;}
+  #detail h3{font-size:12px;color:#8a93a6;margin:16px 0 7px;border-left:3px solid #7c4dff;padding-left:7px;}
   #detail .rel{display:flex;flex-wrap:wrap;gap:5px;}
-  #detail .rel span{background:#f1f3f8;border-radius:5px;padding:2px 7px;font-size:11px;cursor:pointer;}
-  #close{position:absolute;top:12px;right:14px;border:none;background:none;font-size:16px;cursor:pointer;color:#888;}
+  #detail .rel span{background:#f1f3f8;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;transition:.15s;}
+  #detail .rel span:hover{background:#e3e8fb;color:#4a63c4;}
+  #close{position:absolute;top:14px;right:16px;border:none;background:none;font-size:16px;cursor:pointer;color:#aab;border-radius:6px;}
+  #close:hover{background:#f0f2f6;color:#555;}
 </style>
 </head>
 <body>
-<div id="sidebar"><h3>知识板块</h3><div id="glist"></div></div>
+<div id="sidebar"><h3><span class="ic"></span>知识板块</h3><div id="glist"></div>
+  <div class="legend">
+    <div class="lt"><span class="ic"></span>难度热力</div>
+    <div class="heat" id="heat"></div>
+    <div class="heatlab"><span>1 入门</span><span>10 深难</span></div>
+    <div class="lvrow">
+      <div class="lv"><span class="chip" style="background:#2e9e5b"></span>入门级</div>
+      <div class="lv"><span class="chip" style="background:#e8871e"></span>提高级</div>
+      <div class="lv"><span class="chip" style="background:#d64545"></span>NOI 级</div>
+    </div>
+  </div>
+</div>
 <div id="cy"></div>
 <div class="stats" id="stats"></div>
 <div id="detail">
@@ -1909,9 +1942,28 @@ window.TOPOLOGY_DATA = {
 /* ===== 主逻辑 ===== */
 const d = window.TOPOLOGY_DATA;
 const PALETTE = ["#5b8def","#e8871e","#2e9e5b","#d64545","#8e24aa","#00897b","#c2185b",
-                 "#6d4c41","#546e7a","#7c4dff","#f9a825","#3949ab","#00838f","#43a047","#ef6c00"];
+           "#6d4c41","#546e7a","#7c4dff","#f9a825","#3949ab","#00838f","#43a047","#ef6c00"];
 const gColor = {};
 d.groups.forEach((g, i) => gColor[g.id] = g.color || PALETTE[i % PALETTE.length]);
+const LVCOLOR = { "j":"#2e9e5b", "s":"#e8871e", "n":"#d64545" };
+// 难度 1..10 → 热力色（浅绿→黄→深红）
+function diffColor(v){
+  const t = Math.max(0, Math.min(1, (v - 1) / 9));
+  const h = Math.round(140 - t * 140);      // 140绿 → 0红
+  const s = Math.round(72 - t * 10);
+  const l = Math.round(86 - t * 46);        // 浅 → 深
+  return `hsl(${h},${s}%,${l}%)`;
+}
+// 图例热力格
+(function(){
+  const hv = document.getElementById("heat");
+  for (let i = 1; i <= 10; i++){
+    const el = document.createElement("div");
+    el.style.background = diffColor(i);
+    el.title = "难度 " + i;
+    hv.appendChild(el);
+  }
+})();
 
 // 左侧板块导航
 const glist = document.getElementById("glist");
@@ -1949,20 +2001,24 @@ function showGroup(gid){
     return depth[id];
   };
   g.nodes.forEach(n => calcD(n.id, new Set()));
-  const maxD = Math.max(...g.nodes.map(n => depth[n.id]));
-  // 思维导图着色：并列根深色 → 叶子浅色
-  const fill = (hex, dp) => {
-    const r = maxD > 0 ? dp / maxD * 0.6 : 0;
-    const n = parseInt(hex.slice(1), 16);
-    const mix = c => Math.round(c + (255 - c) * r);
-    return `rgb(${mix((n >> 16) & 255)},${mix((n >> 8) & 255)},${mix(n & 255)})`;
-  };
   const elements = [];
   // 板块名 = 思维导图根节点
   elements.push({ data: { id: "root-" + g.id, label: g.name, color: gColor[g.id], isRoot: true } });
-  g.nodes.forEach(nd => elements.push({
-    data: { id: nd.id, label: nd.n, color: gColor[g.id], fill: fill(gColor[g.id], depth[nd.id]) }
-  }));
+  // 知识点：本体=难度热力色，标签胶囊=级别色
+  g.nodes.forEach(nd => {
+    const dc = diffColor(nd.diff || 1);
+    const t = (nd.diff || 1);
+    elements.push({
+      data: {
+        id: nd.id, label: nd.n, color: gColor[g.id],
+        fill: dc,
+        textcolor: t <= 5 ? "#1f2a38" : "#fff",
+        lvcolor: LVCOLOR[nd.level] || "#7c8ea0",
+        lvname: (nd.level ? (LVCOLOR[nd.level] ? {j:"入门",s:"提高",n:"NOI"}[nd.level] : "") : "") || "",
+        diff: t
+      }
+    });
+  });
   let eid = 0;
   // 根节点 → 并列根知识点（深度0）
   g.nodes.forEach(nd => { if (depth[nd.id] === 0) elements.push({ data: { id: "re" + (eid++), source: "root-" + g.id, target: nd.id, isRootEdge: true, color: gColor[g.id] } }); });
@@ -1976,28 +2032,71 @@ function showGroup(gid){
     wheelSensitivity: 0.2, minZoom: 0.02, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
-        "background-color": "data(fill)", "border-color": "data(color)", "border-width": 1.8,
-        "shape": "round-rectangle", "width": 128, "height": 34, "label": "data(label)",
-        "font-size": 12, "color": "#1a2332", "text-valign": "center", "text-halign": "center",
-        "overlay-opacity": 0 } },
+        "background-color": "data(fill)", "border-width": 0,
+        "shape": "round-rectangle", "width": 148, "height": 38, "label": "data(label)",
+        "text-wrap": "wrap", "text-max-width": 130, "font-size": 13, "font-weight": 700,
+        "color": "data(textcolor)",
+        "text-valign": "center", "text-halign": "center",
+        "overlay-opacity": 0,
+        "shadow-blur": 10, "shadow-color": "rgba(0,0,0,.22)", "shadow-offset-x": 0, "shadow-offset-y": 3,
+        "border-color": "data(color)", "border-opacity": .35 } },
       { selector: "node[isRoot='true']", style: {
-        "background-color": "data(color)", "color": "#fff", "font-size": 17, "font-weight": 700,
-        "shape": "round-rectangle", "width": 168, "height": 42, "border-width": 0,
-        "text-valign": "center", "text-halign": "center", "overlay-opacity": 0 } },
+        "background-color": "data(color)", "color": "#fff", "font-size": 18, "font-weight": 800,
+        "shape": "round-rectangle", "width": 176, "height": 46, "border-width": 0,
+        "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
+        "shadow-blur": 18, "shadow-color": "rgba(0,0,0,.28)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "edge", style: {
-        "curve-style": "bezier", "width": 1.7, "line-color": "#c9cfd9",
-        "target-arrow-shape": "none", "opacity": 0.75 } },
+        "curve-style": "bezier", "width": 1.7, "line-color": "#c4ccda",
+        "target-arrow-shape": "none", "opacity": 0.8 } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "bezier", "width": 2.4, "line-color": "data(color)", "opacity": 0.9 } },
+        "curve-style": "bezier", "width": 2.6, "line-color": "data(color)", "opacity": .95 } },
       { selector: ".dim", style: { "opacity": 0.12 } },
       { selector: ".hl", style: { "border-width": 3.5, "border-color": "#ffd54f", "z-index": 20 } },
     ],
   });
   cy.fit(undefined, 50);
   window.cy = cy; // 便于调试与外部扩展
-  document.getElementById("stats").textContent =
-    `${g.name} · ${g.nodes.length} 知识点 · ${intraEdges.length} 依赖边`;
+  // 统计条：板块色点 + 名称 + 计数 + 难度条
+  const diffs = g.nodes.map(n => n.diff || 1);
+  const [dmin, dmax] = [Math.min(...diffs), Math.max(...diffs)];
+  document.getElementById("stats").innerHTML =
+    `<span class="dotbar" style="background:${gColor[g.id]}"></span>
+     <div><div class="t">${g.name}</div>
+     <div class="s">${g.nodes.length} 知识点 · ${intraEdges.length} 依赖边 · 难度 ${dmin}–${dmax}</div></div>
+     <div style="display:flex;gap:3px;align-items:center;margin-left:6px">
+       ${[...Array(10)].map((_,i)=>`<div style="width:5px;height:22px;border-radius:2px;background:${diffColor(i+1)}"></div>`).join("")}
+     </div>`;
   bindInteractions();
+  renderLevelBadges();
+}
+
+/* ===== 级别角标（HTML 覆于节点右上角，随视口缩放平移） ===== */
+function renderLevelBadges(){
+  const cont = document.getElementById("cy");
+  cont.querySelectorAll(".lvlchip").forEach(e => e.remove());
+  const layer = document.createElement("div");
+  layer.id = "badgelayer";
+  layer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:9;";
+  cont.appendChild(layer);
+  const place = () => {
+    layer.innerHTML = "";
+    cy.nodes().filter(n => !n.data("isRoot")).forEach(n => {
+      const p = n.renderedPosition();
+      const w = n.renderedOuterWidth();
+      const lv = n.data("lvcolor");
+      const nm = n.data("lvname");
+      if (!nm) return;
+      const b = document.createElement("span");
+      b.className = "lvlchip";
+      b.style.background = lv;
+      b.style.left = (p.x + w/2 - 26) + "px";
+      b.style.top  = (p.y - 26) + "px";
+      b.textContent = nm;
+      layer.appendChild(b);
+    });
+  };
+  cy.on("render", place);
+  place();
 }
 
 // 交互：悬停高亮前后置链、点击详情
@@ -2038,10 +2137,13 @@ function showDetail(id){
   });
   const lbl = x => cy.getElementById(x).data("label");
   const rel = xs => xs.length ? xs.map(x => `<span onclick="jump('${x}')">${lbl(x)}</span>`).join("") : "<span>—</span>";
+  const lvc = LVCOLOR[nd.level] || "#7c8ea0";
+  const lvn = {j:"入门级",s:"提高级",n:"NOI级"}[nd.level] || "—";
   document.getElementById("body").innerHTML =
     `<h2>${nd.n}</h2>
      <div class="kv"><span class="k">主题</span><span class="v">${g.name}</span></div>
-     <div class="kv"><span class="k">难度</span><span class="v">${nd.diff || ""}</span></div>
+     <div class="kv"><span class="k">级别</span><span class="lvtag" style="background:${lvc}">${lvn}</span></div>
+     <div class="kv"><span class="k">难度</span><span class="v">${nd.diff || ""} / 10</span></div>
      <h3>前置（先学）</h3><div class="rel">${rel(up)}</div>
      <h3>后继（后学）</h3><div class="rel">${rel(down)}</div>`;
   document.getElementById("detail").classList.add("open");

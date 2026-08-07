@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G6 知识拓扑图 · 同心圆放射</title>
+<script src="https://unpkg.com/@antv/g6@4.8.24/dist/g6.min.js"></script>
+<script>
+/* ============================================================
+ * 信奥体系知识（示例数据）
+ * 来源：OI Wiki 知识点 × NOI大纲2025
+ * 节点属性：level 级别(j/s/n) · diff 难度(1-10) · url oi-wiki文档
+ * 格式说明见 data/_模板.js
+ * ============================================================ */
+window.TOPOLOGY_DATA = {
+ "name": "信奥体系知识",
+ "badge": {
+  "key": "diff",
+  "label": "难度"
+ },
+ "groups": [
+  {
+   "id": "lang",
+   "name": "C++语言",
+   "nodes": [
+    {
+     "id": "lang-1",
+     "n": "变量与常量",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/lang/var/"
+    },
+    {
+     "id": "lang-2",
+     "n": "基本数据类型",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/lang/var/"
+    },
+    {
+     "id": "lang-3",
+     "n": "运算符与表达式",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/lang/op/"
+    },
+    {
+     "id": "lang-4",
+     "n": "分支结构",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/branch/"
+    },
+    {
+     "id": "lang-5",
+     "n": "循环结构",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/loop/"
+    },
+    {
+     "id": "lang-6",
+     "n": "数组",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/lang/array/"
+    },
+    {
+     "id": "lang-7",
+     "n": "字符串与string类",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/csl/string/"
+    },
+    {
+     "id": "lang-8",
+     "n": "函数",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/func/"
+    },
+    {
+     "id": "lang-9",
+     "n": "递归",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/func/"
+    },
+    {
+     "id": "lang-10",
+     "n": "结构体与联合体",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/lang/struct/"
+    },
+    {
+     "id": "lang-11",
+     "n": "指针",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/lang/pointer/"
+    },
+    {
+     "id": "lang-12",
+     "n": "引用",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/reference/"
+    },
+    {
+     "id": "lang-13",
+     "n": "文件读写",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/file-op/"
+    },
+    {
+     "id": "lang-14",
+     "n": "STL容器基础",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/lang/csl/sequence-container/"
+    },
+    {
+     "id": "lang-15",
+     "n": "STL算法",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/lang/csl/algorithm/"
+    },
+    {
+     "id": "lang-16",
+     "n": "位运算",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/math/bit/"
+    },
+    {
+     "id": "lang-17",
+     "n": "命名空间与头文件",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/lang/namespace/"
+    },
+    {
+     "id": "lang-18",
+     "n": "迭代器",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/csl/iterator/"
+    },
+    {
+     "id": "lang-19",
+     "n": "关联容器 set/map",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/csl/associative-container/"
+    },
+    {
+     "id": "lang-20",
+     "n": "容器适配器 deque/优先队列",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/csl/container-adapter/"
+    },
+    {
+     "id": "lang-21",
+     "n": "pair 与 tuple",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/csl/pair/"
+    },
+    {
+     "id": "lang-22",
+     "n": "bitset 位集",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/lang/csl/bitset/"
+    },
+    {
+     "id": "lang-23",
+     "n": "类与对象",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/lang/class/"
+    },
+    {
+     "id": "lang-24",
+     "n": "运算符重载",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/lang/op-overload/"
+    },
+    {
+     "id": "lang-25",
+     "n": "面向对象 OOP",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/lang/class/"
+    }
+   ]
+  },
+  {
+   "id": "basic",
+   "name": "算法基础",
+   "nodes": [
+    {
+     "id": "basic-1",
+     "n": "算法概念与描述",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/basic/index/"
+    },
+    {
+     "id": "basic-2",
+     "n": "复杂度分析",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/basic/complexity/"
+    },
+    {
+     "id": "basic-3",
+     "n": "枚举",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/basic/enumerate/"
+    },
+    {
+     "id": "basic-4",
+     "n": "模拟",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/basic/simulate/"
+    },
+    {
+     "id": "basic-5",
+     "n": "递推",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/index/"
+    },
+    {
+     "id": "basic-6",
+     "n": "排序基础",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/sort-intro/"
+    },
+    {
+     "id": "basic-7",
+     "n": "冒泡/选择/插入排序",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/bubble-sort/"
+    },
+    {
+     "id": "basic-8",
+     "n": "计数排序",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/counting-sort/"
+    },
+    {
+     "id": "basic-9",
+     "n": "归并排序",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/basic/merge-sort/"
+    },
+    {
+     "id": "basic-10",
+     "n": "快速排序",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/basic/quick-sort/"
+    },
+    {
+     "id": "basic-11",
+     "n": "堆排序",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/basic/heap-sort/"
+    },
+    {
+     "id": "basic-12",
+     "n": "桶排序",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/basic/bucket-sort/"
+    },
+    {
+     "id": "basic-13",
+     "n": "基数排序",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/basic/radix-sort/"
+    },
+    {
+     "id": "basic-14",
+     "n": "二分与二分答案",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/basic/binary/"
+    },
+    {
+     "id": "basic-15",
+     "n": "倍增",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/basic/binary-lifting/"
+    },
+    {
+     "id": "basic-16",
+     "n": "贪心",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/greedy/"
+    },
+    {
+     "id": "basic-17",
+     "n": "前缀和与差分",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/basic/prefix-sum/"
+    },
+    {
+     "id": "basic-18",
+     "n": "高精度计算",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/math/bignum/"
+    },
+    {
+     "id": "basic-19",
+     "n": "分治",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/basic/divide-and-conquer/"
+    },
+    {
+     "id": "basic-20",
+     "n": "离散化",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/misc/discrete/"
+    },
+    {
+     "id": "basic-21",
+     "n": "双指针",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/misc/two-pointer/"
+    },
+    {
+     "id": "basic-22",
+     "n": "表达式求值",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/misc/expression/"
+    },
+    {
+     "id": "basic-23",
+     "n": "构造",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/basic/construction/"
+    }
+   ]
+  },
+  {
+   "id": "search",
+   "name": "搜索",
+   "nodes": [
+    {
+     "id": "search-1",
+     "n": "深度优先搜索 DFS",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/search/dfs/"
+    },
+    {
+     "id": "search-2",
+     "n": "广度优先搜索 BFS",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/search/bfs/"
+    },
+    {
+     "id": "search-3",
+     "n": "泛洪算法 FloodFill",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/search/bfs/"
+    },
+    {
+     "id": "search-4",
+     "n": "搜索剪枝",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/search/opt/"
+    },
+    {
+     "id": "search-5",
+     "n": "记忆化搜索",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/dp/memo/"
+    },
+    {
+     "id": "search-6",
+     "n": "回溯法",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/search/backtracking/"
+    },
+    {
+     "id": "search-7",
+     "n": "双向搜索",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/bidirectional/"
+    },
+    {
+     "id": "search-8",
+     "n": "启发式搜索",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/heuristic/"
+    },
+    {
+     "id": "search-9",
+     "n": "A* 算法",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/astar/"
+    },
+    {
+     "id": "search-10",
+     "n": "迭代加深搜索",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/iterative/"
+    },
+    {
+     "id": "search-11",
+     "n": "IDA*",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/idastar/"
+    },
+    {
+     "id": "search-12",
+     "n": "Alpha-Beta 剪枝",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/search/alpha-beta/"
+    },
+    {
+     "id": "search-13",
+     "n": "Dancing Links",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/search/dlx/"
+    }
+   ]
+  },
+  {
+   "id": "ds",
+   "name": "数据结构",
+   "nodes": [
+    {
+     "id": "ds-1",
+     "n": "链表",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/ds/linked-list/"
+    },
+    {
+     "id": "ds-2",
+     "n": "栈",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/ds/stack/"
+    },
+    {
+     "id": "ds-3",
+     "n": "队列",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/ds/queue/"
+    },
+    {
+     "id": "ds-4",
+     "n": "二叉树与性质",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "ds-5",
+     "n": "二叉树遍历",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "ds-6",
+     "n": "完全二叉树",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "ds-7",
+     "n": "哈夫曼树",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/ds/huffman-tree/"
+    },
+    {
+     "id": "ds-8",
+     "n": "二叉搜索树 BST",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/ds/bst/"
+    },
+    {
+     "id": "ds-9",
+     "n": "哈希表与冲突处理",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/ds/hash/"
+    },
+    {
+     "id": "ds-10",
+     "n": "单调栈",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/ds/monotonic-stack/"
+    },
+    {
+     "id": "ds-11",
+     "n": "单调队列",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/ds/monotonic-queue/"
+    },
+    {
+     "id": "ds-12",
+     "n": "ST 表",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/sparse-table/"
+    },
+    {
+     "id": "ds-13",
+     "n": "并查集",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/dsu/"
+    },
+    {
+     "id": "ds-14",
+     "n": "二叉堆",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/binary-heap/"
+    },
+    {
+     "id": "ds-15",
+     "n": "优先队列",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/heap/"
+    },
+    {
+     "id": "ds-16",
+     "n": "树状数组",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/fenwick/"
+    },
+    {
+     "id": "ds-17",
+     "n": "线段树",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/ds/seg/"
+    },
+    {
+     "id": "ds-18",
+     "n": "笛卡尔树",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/ds/cartesian-tree/"
+    },
+    {
+     "id": "ds-19",
+     "n": "平衡树 Treap/Splay/AVL",
+     "level": "s",
+     "diff": 8,
+     "url": "https://oi-wiki.org/ds/treap/"
+    },
+    {
+     "id": "ds-20",
+     "n": "分块",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/ds/decompose/"
+    },
+    {
+     "id": "ds-21",
+     "n": "块状链表",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/ds/block-list/"
+    },
+    {
+     "id": "ds-22",
+     "n": "左偏树",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/ds/leftist-tree/"
+    },
+    {
+     "id": "ds-23",
+     "n": "可持久化线段树",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/ds/persistent-seg/"
+    },
+    {
+     "id": "ds-24",
+     "n": "树套树",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/ds/seg-in-seg/"
+    },
+    {
+     "id": "ds-25",
+     "n": "K-D Tree",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/ds/kdt/"
+    },
+    {
+     "id": "ds-26",
+     "n": "动态树 LCT",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/ds/lct/"
+    },
+    {
+     "id": "ds-27",
+     "n": "二项堆",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/ds/heap/"
+    }
+   ]
+  },
+  {
+   "id": "graph",
+   "name": "树与图论",
+   "nodes": [
+    {
+     "id": "graph-1",
+     "n": "树的定义与概念",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "graph-2",
+     "n": "树的表示与存储",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "graph-3",
+     "n": "树的直径",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/tree-diameter/"
+    },
+    {
+     "id": "graph-4",
+     "n": "树的重心",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/tree-centroid/"
+    },
+    {
+     "id": "graph-5",
+     "n": "DFS 序与欧拉序",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "graph-6",
+     "n": "树上差分与倍增",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/tree-basic/"
+    },
+    {
+     "id": "graph-7",
+     "n": "最近公共祖先 LCA",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/lca/"
+    },
+    {
+     "id": "graph-8",
+     "n": "树链剖分",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/hld/"
+    },
+    {
+     "id": "graph-9",
+     "n": "虚树",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/virtual-tree/"
+    },
+    {
+     "id": "graph-10",
+     "n": "基环树",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/rings-count/"
+    },
+    {
+     "id": "graph-11",
+     "n": "图的定义与概念",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/graph/concept/"
+    },
+    {
+     "id": "graph-12",
+     "n": "图的存储",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/save/"
+    },
+    {
+     "id": "graph-13",
+     "n": "图的 DFS 遍历",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/dfs/"
+    },
+    {
+     "id": "graph-14",
+     "n": "图的 BFS 遍历",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/graph/bfs/"
+    },
+    {
+     "id": "graph-15",
+     "n": "DAG 与拓扑排序",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/topo/"
+    },
+    {
+     "id": "graph-16",
+     "n": "单源最短路",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/shortest-path/"
+    },
+    {
+     "id": "graph-17",
+     "n": "Floyd-Warshall",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/shortest-path/"
+    },
+    {
+     "id": "graph-18",
+     "n": "单源次短路",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/graph/kth-path/"
+    },
+    {
+     "id": "graph-19",
+     "n": "差分约束",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/graph/diff-constraints/"
+    },
+    {
+     "id": "graph-20",
+     "n": "最小生成树",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/mst/"
+    },
+    {
+     "id": "graph-21",
+     "n": "最小树形图",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/graph/dmst/"
+    },
+    {
+     "id": "graph-22",
+     "n": "欧拉图与欧拉回路",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/euler/"
+    },
+    {
+     "id": "graph-23",
+     "n": "二分图判定与染色",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/graph/bi-graph/"
+    },
+    {
+     "id": "graph-24",
+     "n": "强连通分量",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/graph/scc/"
+    },
+    {
+     "id": "graph-25",
+     "n": "割点与割边",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/graph/cut/"
+    },
+    {
+     "id": "graph-26",
+     "n": "网络流·最大流",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/flow/max-flow/"
+    },
+    {
+     "id": "graph-27",
+     "n": "费用流",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/flow/min-cost/"
+    },
+    {
+     "id": "graph-28",
+     "n": "二分图匹配·匈牙利",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/graph-matching/bigraph-match/"
+    },
+    {
+     "id": "graph-29",
+     "n": "2-SAT",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/graph/2-sat/"
+    },
+    {
+     "id": "graph-30",
+     "n": "支配集/独立集/覆盖集",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/graph/max-clique/"
+    }
+   ]
+  },
+  {
+   "id": "dp",
+   "name": "动态规划",
+   "nodes": [
+    {
+     "id": "dp-1",
+     "n": "动态规划基础",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/dp/basic/"
+    },
+    {
+     "id": "dp-2",
+     "n": "线性 DP（一维）",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/dp/basic/"
+    },
+    {
+     "id": "dp-3",
+     "n": "背包 DP",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/dp/knapsack/"
+    },
+    {
+     "id": "dp-4",
+     "n": "区间 DP",
+     "level": "j",
+     "diff": 5,
+     "url": "https://oi-wiki.org/dp/interval/"
+    },
+    {
+     "id": "dp-5",
+     "n": "DAG 上的 DP",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/dp/dag/"
+    },
+    {
+     "id": "dp-6",
+     "n": "树形 DP",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/dp/tree/"
+    },
+    {
+     "id": "dp-7",
+     "n": "状压 DP",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/dp/state/"
+    },
+    {
+     "id": "dp-8",
+     "n": "数位 DP",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/dp/number/"
+    },
+    {
+     "id": "dp-9",
+     "n": "概率 DP",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/dp/probability/"
+    },
+    {
+     "id": "dp-10",
+     "n": "计数 DP",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/dp/count/"
+    },
+    {
+     "id": "dp-11",
+     "n": "插头 DP",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/dp/plug/"
+    },
+    {
+     "id": "dp-12",
+     "n": "动态 DP",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/dp/dynamic/"
+    },
+    {
+     "id": "dp-13",
+     "n": "DP 优化·单调队列/栈",
+     "level": "s",
+     "diff": 8,
+     "url": "https://oi-wiki.org/dp/opt/monotonic-queue-stack/"
+    },
+    {
+     "id": "dp-14",
+     "n": "DP 优化·斜率/四边形",
+     "level": "s",
+     "diff": 8,
+     "url": "https://oi-wiki.org/dp/opt/slope/"
+    },
+    {
+     "id": "dp-15",
+     "n": "WQS 二分",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/dp/opt/wqs-binary-search/"
+    }
+   ]
+  },
+  {
+   "id": "str",
+   "name": "字符串",
+   "nodes": [
+    {
+     "id": "str-1",
+     "n": "字符串基础",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/string/basic/"
+    },
+    {
+     "id": "str-2",
+     "n": "字符串哈希",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/string/hash/"
+    },
+    {
+     "id": "str-3",
+     "n": "字典树 Trie",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/string/trie/"
+    },
+    {
+     "id": "str-4",
+     "n": "KMP 算法",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/string/kmp/"
+    },
+    {
+     "id": "str-5",
+     "n": "Z 函数（扩展 KMP）",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/string/z-func/"
+    },
+    {
+     "id": "str-6",
+     "n": "Manacher 回文",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/string/manacher/"
+    },
+    {
+     "id": "str-7",
+     "n": "有穷自动机",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/fsm/"
+    },
+    {
+     "id": "str-8",
+     "n": "AC 自动机",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/string/ac-automaton/"
+    },
+    {
+     "id": "str-9",
+     "n": "后缀数组 SA",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/string/sa/"
+    },
+    {
+     "id": "str-10",
+     "n": "后缀自动机 SAM",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/string/sam/"
+    },
+    {
+     "id": "str-11",
+     "n": "后缀树",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/string/suffix-tree/"
+    },
+    {
+     "id": "str-12",
+     "n": "回文树",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/string/pam/"
+    },
+    {
+     "id": "str-13",
+     "n": "序列自动机",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/string/seq-automaton/"
+    },
+    {
+     "id": "str-14",
+     "n": "最小表示法",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/string/minimal-string/"
+    },
+    {
+     "id": "str-15",
+     "n": "Lyndon 分解",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/string/lyndon/"
+    }
+   ]
+  },
+  {
+   "id": "math",
+   "name": "数学",
+   "nodes": [
+    {
+     "id": "math-1",
+     "n": "进制与进制转换",
+     "level": "j",
+     "diff": 1,
+     "url": "https://oi-wiki.org/math/numeral-sys/base/"
+    },
+    {
+     "id": "math-2",
+     "n": "整除/因数/质数/合数",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/math/number-theory/prime/"
+    },
+    {
+     "id": "math-3",
+     "n": "取整与模运算",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/math/number-theory/mod-arithmetic/"
+    },
+    {
+     "id": "math-4",
+     "n": "整数唯一分解定理",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/math/number-theory/prime/"
+    },
+    {
+     "id": "math-5",
+     "n": "欧几里得算法 gcd",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/math/number-theory/gcd/"
+    },
+    {
+     "id": "math-6",
+     "n": "素数筛法",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/math/number-theory/sieve/"
+    },
+    {
+     "id": "math-7",
+     "n": "快速幂",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/math/binary-exponentiation/"
+    },
+    {
+     "id": "math-8",
+     "n": "欧拉函数",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/euler-totient/"
+    },
+    {
+     "id": "math-9",
+     "n": "欧拉定理与费马小定理",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/fermat/"
+    },
+    {
+     "id": "math-10",
+     "n": "威尔逊定理",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/fermat/"
+    },
+    {
+     "id": "math-11",
+     "n": "裴蜀定理",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/bezouts/"
+    },
+    {
+     "id": "math-12",
+     "n": "扩展欧几里得",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/bezouts/"
+    },
+    {
+     "id": "math-13",
+     "n": "模逆元",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/inverse/"
+    },
+    {
+     "id": "math-14",
+     "n": "同余与线性同余方程",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/math/number-theory/linear-equation/"
+    },
+    {
+     "id": "math-15",
+     "n": "中国剩余定理",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/number-theory/crt/"
+    },
+    {
+     "id": "math-16",
+     "n": "卢卡斯定理",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/math/number-theory/lucas/"
+    },
+    {
+     "id": "math-17",
+     "n": "原根与离散对数",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/number-theory/primitive-root/"
+    },
+    {
+     "id": "math-18",
+     "n": "二次剩余",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/number-theory/quad-residue/"
+    },
+    {
+     "id": "math-19",
+     "n": "数论分块",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/math/number-theory/sqrt-decomposition/"
+    },
+    {
+     "id": "math-20",
+     "n": "莫比乌斯反演",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/number-theory/mobius/"
+    },
+    {
+     "id": "math-21",
+     "n": "杜教筛",
+     "level": "n",
+     "diff": 10,
+     "url": "https://oi-wiki.org/math/number-theory/du/"
+    },
+    {
+     "id": "math-22",
+     "n": "加法/乘法原理",
+     "level": "j",
+     "diff": 2,
+     "url": "https://oi-wiki.org/math/combinatorics/combination/"
+    },
+    {
+     "id": "math-23",
+     "n": "排列与组合",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/math/combinatorics/combination/"
+    },
+    {
+     "id": "math-24",
+     "n": "杨辉三角",
+     "level": "j",
+     "diff": 4,
+     "url": "https://oi-wiki.org/math/combinatorics/combination/"
+    },
+    {
+     "id": "math-25",
+     "n": "二项式定理",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/combinatorics/combination/"
+    },
+    {
+     "id": "math-26",
+     "n": "鸽巢原理",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/combinatorics/drawer-principle/"
+    },
+    {
+     "id": "math-27",
+     "n": "错排与圆排列",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/combinatorics/derangement/"
+    },
+    {
+     "id": "math-28",
+     "n": "容斥原理",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/combinatorics/inclusion-exclusion-principle/"
+    },
+    {
+     "id": "math-29",
+     "n": "卡特兰数",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/combinatorics/catalan/"
+    },
+    {
+     "id": "math-30",
+     "n": "斐波那契数列",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/combinatorics/fibonacci/"
+    },
+    {
+     "id": "math-31",
+     "n": "斯特林数",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/combinatorics/stirling/"
+    },
+    {
+     "id": "math-32",
+     "n": "向量与矩阵",
+     "level": "s",
+     "diff": 5,
+     "url": "https://oi-wiki.org/math/linear-algebra/matrix/"
+    },
+    {
+     "id": "math-33",
+     "n": "矩阵运算与快速幂",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/linear-algebra/matrix/"
+    },
+    {
+     "id": "math-34",
+     "n": "行列式",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/math/linear-algebra/determinant/"
+    },
+    {
+     "id": "math-35",
+     "n": "高斯消元",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/math/numerical/gauss/"
+    },
+    {
+     "id": "math-36",
+     "n": "线性基",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/math/linear-algebra/basis/"
+    },
+    {
+     "id": "math-37",
+     "n": "生成函数",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/poly/ogf/"
+    },
+    {
+     "id": "math-38",
+     "n": "FFT 快速傅里叶变换",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/poly/fft/"
+    },
+    {
+     "id": "math-39",
+     "n": "NTT 快速数论变换",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/poly/ntt/"
+    },
+    {
+     "id": "math-40",
+     "n": "概率论基础",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/math/probability/basic-conception/"
+    },
+    {
+     "id": "math-41",
+     "n": "博弈论·Nim 游戏",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/math/game-theory/impartial-game/"
+    },
+    {
+     "id": "math-42",
+     "n": "SG 函数",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/math/game-theory/impartial-game/"
+    }
+   ]
+  },
+  {
+   "id": "geo",
+   "name": "计算几何",
+   "nodes": [
+    {
+     "id": "geo-1",
+     "n": "计算几何基础",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/geometry/2d/"
+    },
+    {
+     "id": "geo-2",
+     "n": "距离",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/geometry/distance/"
+    },
+    {
+     "id": "geo-3",
+     "n": "凸包",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/geometry/convex-hull/"
+    },
+    {
+     "id": "geo-4",
+     "n": "旋转卡壳",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/geometry/rotating-calipers/"
+    },
+    {
+     "id": "geo-5",
+     "n": "半平面交",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/geometry/half-plane/"
+    },
+    {
+     "id": "geo-6",
+     "n": "扫描线",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/geometry/scanning/"
+    },
+    {
+     "id": "geo-7",
+     "n": "Pick 定理",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/geometry/pick/"
+    },
+    {
+     "id": "geo-8",
+     "n": "平面最近点对",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/geometry/nearest-points/"
+    },
+    {
+     "id": "geo-9",
+     "n": "三维几何",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/geometry/3d/"
+    }
+   ]
+  },
+  {
+   "id": "misc",
+   "name": "杂项技巧",
+   "nodes": [
+    {
+     "id": "misc-1",
+     "n": "离线处理思想",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/offline/"
+    },
+    {
+     "id": "misc-2",
+     "n": "CDQ 分治",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/misc/cdq-divide/"
+    },
+    {
+     "id": "misc-3",
+     "n": "整体二分",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/misc/parallel-binsearch/"
+    },
+    {
+     "id": "misc-4",
+     "n": "莫队算法",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/mo-algo/"
+    },
+    {
+     "id": "misc-5",
+     "n": "平衡规划思想",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/basic/index/"
+    },
+    {
+     "id": "misc-6",
+     "n": "复杂分治思想",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/basic/divide-and-conquer/"
+    },
+    {
+     "id": "misc-7",
+     "n": "随机化·爬山/模拟退火",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/simulated-annealing/"
+    },
+    {
+     "id": "misc-8",
+     "n": "悬线法",
+     "level": "s",
+     "diff": 7,
+     "url": "https://oi-wiki.org/misc/hoverline/"
+    },
+    {
+     "id": "misc-9",
+     "n": "分数规划",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/misc/frac-programming/"
+    },
+    {
+     "id": "misc-10",
+     "n": "珂朵莉树",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/odt/"
+    },
+    {
+     "id": "misc-11",
+     "n": "约瑟夫问题",
+     "level": "j",
+     "diff": 3,
+     "url": "https://oi-wiki.org/misc/josephus/"
+    },
+    {
+     "id": "misc-12",
+     "n": "主元素问题",
+     "level": "s",
+     "diff": 6,
+     "url": "https://oi-wiki.org/misc/main-element/"
+    },
+    {
+     "id": "misc-13",
+     "n": "Kahan 求和",
+     "level": "n",
+     "diff": 8,
+     "url": "https://oi-wiki.org/misc/kahan-summation/"
+    },
+    {
+     "id": "misc-14",
+     "n": "Garsia-Wachs 算法",
+     "level": "n",
+     "diff": 9,
+     "url": "https://oi-wiki.org/misc/garsia-wachs/"
+    }
+   ]
+  }
+ ],
+ "edges": [
+  ["lang-9", "search-1"],
+  ["lang-9", "dp-1"],
+  ["lang-6", "basic-17"],
+  ["lang-6", "ds-12"],
+  ["lang-6", "ds-16"],
+  ["lang-6", "graph-12"],
+  ["search-1", "graph-13"],
+  ["search-2", "graph-14"],
+  ["search-1", "graph-5"],
+  ["search-5", "dp-1"],
+  ["basic-15", "graph-6"],
+  ["basic-15", "graph-7"],
+  ["basic-17", "graph-6"],
+  ["basic-19", "misc-2"],
+  ["basic-20", "misc-4"],
+  ["basic-16", "graph-20"],
+  ["basic-17", "ds-16"],
+  ["ds-15", "basic-11"],
+  ["ds-13", "graph-20"],
+  ["ds-15", "graph-16"],
+  ["ds-11", "dp-13"],
+  ["ds-17", "graph-8"],
+  ["ds-9", "str-2"],
+  ["graph-1", "dp-6"],
+  ["math-23", "dp-10"],
+  ["math-40", "dp-9"],
+  ["lang-3", "lang-4"],
+  ["lang-3", "lang-5"],
+  ["lang-1", "lang-6"],
+  ["lang-5", "lang-6"],
+  ["lang-6", "lang-7"],
+  ["lang-5", "lang-8"],
+  ["lang-6", "lang-8"],
+  ["lang-8", "lang-9"],
+  ["lang-2", "lang-10"],
+  ["lang-6", "lang-11"],
+  ["lang-10", "lang-11"],
+  ["lang-11", "lang-12"],
+  ["lang-7", "lang-13"],
+  ["lang-8", "lang-13"],
+  ["lang-8", "lang-14"],
+  ["lang-11", "lang-14"],
+  ["lang-14", "lang-15"],
+  ["lang-3", "lang-16"],
+  ["lang-8", "lang-17"],
+  ["lang-14", "lang-18"],
+  ["lang-14", "lang-19"],
+  ["lang-14", "lang-20"],
+  ["lang-14", "lang-21"],
+  ["lang-14", "lang-22"],
+  ["lang-16", "lang-22"],
+  ["lang-8", "lang-23"],
+  ["lang-12", "lang-23"],
+  ["lang-23", "lang-24"],
+  ["lang-23", "lang-25"],
+  ["lang-24", "lang-25"],
+  ["basic-1", "basic-2"],
+  ["basic-1", "basic-5"],
+  ["basic-3", "basic-6"],
+  ["basic-6", "basic-7"],
+  ["basic-6", "basic-8"],
+  ["basic-7", "basic-9"],
+  ["basic-7", "basic-10"],
+  ["basic-6", "basic-11"],
+  ["basic-6", "basic-12"],
+  ["basic-12", "basic-13"],
+  ["basic-7", "basic-14"],
+  ["basic-2", "basic-15"],
+  ["basic-2", "basic-16"],
+  ["basic-1", "basic-17"],
+  ["basic-4", "basic-18"],
+  ["basic-1", "basic-18"],
+  ["basic-9", "basic-19"],
+  ["basic-19", "basic-20"],
+  ["basic-7", "basic-21"],
+  ["basic-4", "basic-21"],
+  ["basic-5", "basic-22"],
+  ["basic-2", "basic-23"],
+  ["search-1", "search-3"],
+  ["search-2", "search-3"],
+  ["search-1", "search-4"],
+  ["search-2", "search-4"],
+  ["search-1", "search-5"],
+  ["search-1", "search-6"],
+  ["search-4", "search-6"],
+  ["search-1", "search-7"],
+  ["search-2", "search-7"],
+  ["search-4", "search-8"],
+  ["search-2", "search-9"],
+  ["search-8", "search-9"],
+  ["search-1", "search-10"],
+  ["search-4", "search-10"],
+  ["search-10", "search-11"],
+  ["search-9", "search-11"],
+  ["search-4", "search-12"],
+  ["search-6", "search-12"],
+  ["search-6", "search-13"],
+  ["search-8", "search-13"],
+  ["ds-4", "ds-5"],
+  ["ds-4", "ds-6"],
+  ["ds-5", "ds-7"],
+  ["ds-4", "ds-8"],
+  ["ds-5", "ds-8"],
+  ["ds-2", "ds-9"],
+  ["ds-3", "ds-9"],
+  ["ds-2", "ds-10"],
+  ["ds-3", "ds-11"],
+  ["ds-5", "ds-12"],
+  ["ds-4", "ds-13"],
+  ["ds-6", "ds-14"],
+  ["ds-14", "ds-15"],
+  ["ds-5", "ds-16"],
+  ["ds-5", "ds-17"],
+  ["ds-16", "ds-17"],
+  ["ds-10", "ds-18"],
+  ["ds-17", "ds-18"],
+  ["ds-8", "ds-19"],
+  ["ds-14", "ds-19"],
+  ["ds-16", "ds-20"],
+  ["ds-1", "ds-21"],
+  ["ds-20", "ds-21"],
+  ["ds-14", "ds-22"],
+  ["ds-17", "ds-23"],
+  ["ds-17", "ds-24"],
+  ["ds-19", "ds-24"],
+  ["ds-17", "ds-25"],
+  ["ds-17", "ds-26"],
+  ["ds-19", "ds-26"],
+  ["ds-14", "ds-27"],
+  ["graph-1", "graph-2"],
+  ["graph-2", "graph-3"],
+  ["graph-2", "graph-4"],
+  ["graph-2", "graph-5"],
+  ["graph-5", "graph-6"],
+  ["graph-6", "graph-7"],
+  ["graph-7", "graph-8"],
+  ["graph-8", "graph-9"],
+  ["graph-8", "graph-10"],
+  ["graph-11", "graph-12"],
+  ["graph-12", "graph-13"],
+  ["graph-12", "graph-14"],
+  ["graph-13", "graph-15"],
+  ["graph-13", "graph-16"],
+  ["graph-14", "graph-16"],
+  ["graph-13", "graph-17"],
+  ["graph-14", "graph-17"],
+  ["graph-16", "graph-18"],
+  ["graph-16", "graph-19"],
+  ["graph-13", "graph-20"],
+  ["graph-14", "graph-20"],
+  ["graph-20", "graph-21"],
+  ["graph-13", "graph-22"],
+  ["graph-14", "graph-22"],
+  ["graph-14", "graph-23"],
+  ["graph-13", "graph-24"],
+  ["graph-13", "graph-25"],
+  ["graph-15", "graph-26"],
+  ["graph-20", "graph-26"],
+  ["graph-26", "graph-27"],
+  ["graph-23", "graph-28"],
+  ["graph-24", "graph-29"],
+  ["graph-25", "graph-30"],
+  ["dp-1", "dp-2"],
+  ["dp-1", "dp-3"],
+  ["dp-2", "dp-4"],
+  ["dp-2", "dp-5"],
+  ["dp-5", "dp-6"],
+  ["dp-2", "dp-7"],
+  ["dp-2", "dp-8"],
+  ["dp-1", "dp-9"],
+  ["dp-4", "dp-10"],
+  ["dp-2", "dp-10"],
+  ["dp-7", "dp-11"],
+  ["dp-4", "dp-11"],
+  ["dp-6", "dp-12"],
+  ["dp-2", "dp-13"],
+  ["dp-13", "dp-14"],
+  ["dp-14", "dp-15"],
+  ["str-1", "str-2"],
+  ["str-1", "str-3"],
+  ["str-1", "str-4"],
+  ["str-4", "str-5"],
+  ["str-1", "str-6"],
+  ["str-3", "str-7"],
+  ["str-3", "str-8"],
+  ["str-4", "str-8"],
+  ["str-4", "str-9"],
+  ["str-7", "str-10"],
+  ["str-9", "str-11"],
+  ["str-10", "str-11"],
+  ["str-6", "str-12"],
+  ["str-3", "str-13"],
+  ["str-1", "str-14"],
+  ["str-9", "str-15"],
+  ["math-2", "math-4"],
+  ["math-3", "math-4"],
+  ["math-2", "math-5"],
+  ["math-4", "math-6"],
+  ["math-3", "math-7"],
+  ["math-6", "math-8"],
+  ["math-4", "math-8"],
+  ["math-8", "math-9"],
+  ["math-7", "math-9"],
+  ["math-4", "math-10"],
+  ["math-5", "math-11"],
+  ["math-5", "math-12"],
+  ["math-11", "math-12"],
+  ["math-12", "math-13"],
+  ["math-12", "math-14"],
+  ["math-14", "math-15"],
+  ["math-13", "math-16"],
+  ["math-9", "math-17"],
+  ["math-17", "math-18"],
+  ["math-13", "math-19"],
+  ["math-8", "math-20"],
+  ["math-19", "math-20"],
+  ["math-20", "math-21"],
+  ["math-22", "math-23"],
+  ["math-23", "math-24"],
+  ["math-23", "math-25"],
+  ["math-22", "math-26"],
+  ["math-23", "math-27"],
+  ["math-23", "math-28"],
+  ["math-23", "math-29"],
+  ["math-22", "math-30"],
+  ["math-23", "math-31"],
+  ["math-1", "math-32"],
+  ["math-22", "math-32"],
+  ["math-32", "math-33"],
+  ["math-33", "math-34"],
+  ["math-34", "math-35"],
+  ["math-33", "math-36"],
+  ["math-35", "math-36"],
+  ["math-25", "math-37"],
+  ["math-33", "math-38"],
+  ["math-37", "math-38"],
+  ["math-38", "math-39"],
+  ["math-22", "math-40"],
+  ["math-23", "math-40"],
+  ["math-40", "math-41"],
+  ["math-41", "math-42"],
+  ["geo-1", "geo-2"],
+  ["geo-1", "geo-3"],
+  ["geo-3", "geo-4"],
+  ["geo-3", "geo-5"],
+  ["geo-2", "geo-6"],
+  ["geo-3", "geo-6"],
+  ["geo-2", "geo-7"],
+  ["geo-6", "geo-8"],
+  ["geo-4", "geo-8"],
+  ["geo-2", "geo-9"],
+  ["misc-12", "misc-1"],
+  ["misc-1", "misc-2"],
+  ["misc-2", "misc-3"],
+  ["misc-1", "misc-4"],
+  ["misc-1", "misc-5"],
+  ["misc-2", "misc-6"],
+  ["misc-1", "misc-7"],
+  ["misc-12", "misc-9"],
+  ["misc-5", "misc-10"],
+  ["misc-6", "misc-14"]
+ ],
+ "filters": [
+  {
+   "key": "level",
+   "name": "级别",
+   "type": "multi",
+   "options": [
+    {
+     "v": "j",
+     "label": "入门级",
+     "color": "#2e9e5b"
+    },
+    {
+     "v": "s",
+     "label": "提高级",
+     "color": "#e8871e"
+    },
+    {
+     "v": "n",
+     "label": "NOI级",
+     "color": "#d64545"
+    }
+   ]
+  },
+  {
+   "key": "diff",
+   "name": "难度上限",
+   "type": "range",
+   "min": 1,
+   "max": 10
+  }
+ ]
+};
+
+</script>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;}
+  #container{position:fixed;inset:0;}
+  #legend{position:fixed;right:14px;top:12px;background:rgba(255,255,255,.94);border:1px solid #e2e6ee;
+    border-radius:8px;padding:8px 12px;font-size:11px;color:#6b7686;z-index:5;max-height:75vh;overflow:auto;
+    box-shadow:0 2px 8px rgba(0,0,0,.06);}
+  #legend h4{margin:0 0 6px;font-size:11px;color:#888;}
+  #legend .lg{display:flex;align-items:center;gap:6px;margin:3px 0;cursor:pointer;padding:2px 4px;border-radius:4px;}
+  #legend .lg:hover{background:#f2f4f9;}
+  #legend .dot{width:10px;height:10px;border-radius:2px;flex:0 0 auto;}
+  #detail{position:fixed;right:0;top:0;bottom:0;width:300px;background:#fff;
+    border-left:1px solid #e2e6ee;box-shadow:-3px 0 10px rgba(0,0,0,.06);
+    padding:18px 16px;overflow:auto;transform:translateX(105%);transition:transform .25s;z-index:10;}
+  #detail.open{transform:translateX(0);}
+  #detail h2{font-size:15px;margin-bottom:10px;}
+  #detail .kv{display:flex;gap:8px;margin:6px 0;font-size:13px;}
+  #detail .k{flex:0 0 50px;color:#888;}
+  #detail h3{font-size:12px;color:#888;margin:14px 0 6px;border-left:3px solid #7c4dff;padding-left:6px;}
+  #detail .rel{display:flex;flex-wrap:wrap;gap:5px;}
+  #detail .rel span{background:#f1f3f8;border-radius:4px;padding:2px 7px;font-size:11px;cursor:pointer;}
+  #close{position:absolute;top:12px;right:14px;border:none;background:none;font-size:16px;cursor:pointer;color:#888;}
+  .stats{position:fixed;left:14px;top:12px;background:rgba(255,255,255,.94);border:1px solid #e2e6ee;
+    border-radius:8px;padding:6px 12px;font-size:12px;color:#6b7686;z-index:5;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+</style>
+</head>
+<body>
+<div class="stats" id="stats"></div>
+<div id="legend"><h4>主题（点击聚焦）</h4></div>
+<div id="container"></div>
+<div id="detail">
+  <button id="close">✕</button>
+  <div id="body"></div>
+</div>
+<script>
+const d = window.TOPOLOGY_DATA;
+const PALETTE = ["#5b8def","#e8871e","#2e9e5b","#d64545","#8e24aa","#00897b","#c2185b",
+                 "#6d4c41","#546e7a","#7c4dff","#f9a825","#3949ab","#00838f","#43a047","#ef6c00"];
+const gColor = {};
+d.groups.forEach((g, i) => gColor[g.id] = g.color || PALETTE[i % PALETTE.length]);
+const lighten = (hex, a) => { const n = parseInt(hex.slice(1),16); return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`; };
+
+/* ===== 同心圆放射布局：
+   板块名在圆心；节点按难度(diff)分层环布——简单的靠内圈，难的依赖多的靠外圈。
+   板块之间紧凑打包；静态位置，不自动跳动。 ===== */
+const STEP = 168, RING_GAP = 170, CENTER_R = 44, PACK_GAP = 240, TARGET_W = 6200;
+const levelOf = diff => (diff = Math.min(10, Math.max(1, diff||1))) <= 3 ? 1 : diff <= 6 ? 2 : diff <= 8 ? 3 : 4;
+
+function layoutGroup(g, cx, cy){
+  const ring = {};
+  g.nodes.forEach(n => { const lv = levelOf(n.diff); (ring[lv] = ring[lv] || []).push(n); });
+  const rings = Object.entries(ring).map(([lv, ns]) => {
+    const L = +lv, n = ns.length;
+    return { L, ns, r: Math.max(RING_GAP * L, STEP / (2 * Math.sin(Math.PI / Math.max(2, n)))) };
+  }).sort((a, b) => a.L - b.L);
+  // 相邻环半径差 ≥ RING_GAP，保证任意角度下环间不重叠
+  for (let i = 1; i < rings.length; i++)
+    if (rings[i].r < rings[i - 1].r + RING_GAP) rings[i].r = rings[i - 1].r + RING_GAP;
+  let maxR = 0;
+  rings.forEach(({ L, ns, r }) => {
+    maxR = Math.max(maxR, r);
+    const off = (L % 2) * (Math.PI / ns.length);
+    ns.forEach((nd, i) => {
+      const th = 2 * Math.PI * i / ns.length + off;
+      nd.x = cx + r * Math.cos(th);
+      nd.y = cy + r * Math.sin(th);
+    });
+  });
+  return maxR + CENTER_R;
+}
+
+// 板块打包：按半径降序，逐行放入（每行宽度 ≤ TARGET_W）
+const groups = d.groups.map(g => ({ g, r: layoutGroup(g, 0, 0) })).sort((a, b) => b.r - a.r);
+const rows = [];
+let idx = 0;
+while (idx < groups.length){
+  const row = []; let w = 0;
+  while (idx < groups.length && (row.length === 0 || w + groups[idx].r * 2 + PACK_GAP <= TARGET_W)){
+    row.push(groups[idx]); w += groups[idx].r * 2 + (row.length > 1 ? PACK_GAP : 0); idx++;
+  }
+  rows.push(row);
+}
+let yy = 0;
+rows.forEach(row => {
+  const rowH = Math.max(...row.map(x => x.r * 2)); let xx = 0;
+  row.forEach(gr => {
+    const c = { x: xx + gr.r, y: yy + gr.r };
+    layoutGroup(gr.g, c.x, c.y);
+    gr.cx = c.x; gr.cy = c.y;
+    xx += gr.r * 2 + PACK_GAP;
+  });
+  yy += rowH + PACK_GAP;
+});
+
+// 构建 G6 数据：中心主题节点 + 知识点节点 + 边
+const nodes = [], byId = {}, centerById = {};
+const grpById = {};
+groups.forEach(gr => grpById[gr.g.id] = gr);
+d.groups.forEach(g => {
+  const c = grpById[g.id];
+  const center = { id: "g-" + g.id, label: g.name, gid: g.id, isCenter: true,
+    x: c.cx, y: c.cy, style: { radius: 42 }, type: "circle",
+    labelCfg: { style: { fontSize: 15, fontWeight: 700, fill: "#fff" } },
+    styleOverride: { fill: gColor[g.id], stroke: gColor[g.id], lineWidth: 2 } };
+  nodes.push(center); centerById[g.id] = center;
+  g.nodes.forEach(nd => {
+    const n = { id: nd.id, label: nd.n, gid: g.id, gname: g.name, isCenter: false,
+      x: nd.x, y: nd.y, type: "rect", size: [150, 34],
+      style: { fill: lighten(gColor[g.id], .15), stroke: gColor[g.id], radius: 7 },
+      labelCfg: { style: { fontSize: 11, fill: "#1a2332" } },
+      data: nd };
+    nodes.push(n); byId[nd.id] = n;
+  });
+});
+// 真实依赖边
+const realEdges = [];
+(d.edges || []).forEach(e => {
+  const s = Array.isArray(e) ? e[0] : e.from, t = Array.isArray(e) ? e[1] : e.to;
+  if (byId[s] && byId[t]) realEdges.push({ source: s, target: t });
+});
+
+// 辐射辅助边（虚线，非真实依赖）：圆心 → 最内层；每层未连下层的节点 → 下一层角度最近节点
+const bridgeEdges = [];
+d.groups.forEach(g => {
+  const gid = g.id, c = grpById[gid];
+  const ns = g.nodes.map(nd => byId[nd.id]);
+  const lv = {};
+  ns.forEach(n => { const L = levelOf(n.data.diff); (lv[L] = lv[L] || []).push(n); });
+  const levels = Object.keys(lv).map(Number).sort((a, b) => a - b);
+  // 圆心 → 最内层所有节点
+  lv[levels[0]].forEach(n =>
+    bridgeEdges.push({ source: "g-" + gid, target: n.id, kind: "radial", gid }));
+  // 逐层：无真实出边到下一层的节点，补连到下一层角度最近者
+  for (let k = 0; k < levels.length - 1; k++){
+    const L = levels[k], from = lv[L], to = lv[levels[k + 1]];
+    const toAng = to.map(t => Math.atan2(t.y - c.cy, t.x - c.cx));
+    from.forEach(f => {
+      const has = realEdges.some(e => e.source === f.id && to.some(t => t.id === e.target));
+      if (has) return;
+      const fa = Math.atan2(f.y - c.cy, f.x - c.cx);
+      let best = 0, bd = 1e9;
+      to.forEach((t, i) => {
+        let d = Math.abs(toAng[i] - fa); if (d > Math.PI) d = 2 * Math.PI - d;
+        if (d < bd){ bd = d; best = i; }
+      });
+      bridgeEdges.push({ source: f.id, target: to[best].id, kind: "layer", gid });
+    });
+  }
+});
+const allEdges = realEdges.map(e => ({ ...e })).concat(bridgeEdges.map(e => ({
+  ...e,
+  style: {
+    stroke: gColor[e.gid], lineWidth: 1,
+    lineDash: e.kind === "radial" ? [6, 5] : [3, 4],
+    strokeOpacity: e.kind === "radial" ? 0.55 : 0.35,
+    endArrow: false,
+  },
+})));
+
+const graph = new G6.Graph({
+  container: "container",
+  width: window.innerWidth, height: window.innerHeight,
+  fitView: true,
+  fitViewPadding: [50, 50, 50, 50],
+  modes: { default: ["drag-canvas", "zoom-canvas", "drag-node"] },
+  defaultEdge: {
+    type: "line",
+    style: { stroke: "#aeb6c4", lineWidth: 1.2, endArrow: { path: G6.Arrow.triangle(7, 5, 0), fill: "#aeb6c4" } },
+  },
+  nodeStateStyles: { dim: { opacity: 0.12 } },
+  // 不设 layout —— 使用上面的固定位置，静止不跳
+});
+graph.data({ nodes, edges: allEdges });
+graph.render();
+window.graph = graph;
+
+document.getElementById("stats").textContent =
+  `${d.name} · ${nodes.length - 10} 知识点 · ${realEdges.length} 依赖边 · 虚线为分层辐射辅助线`;
+
+// 图例：点击聚焦某主题
+const legend = document.getElementById("legend");
+d.groups.forEach(g => {
+  const row = document.createElement("div");
+  row.className = "lg";
+  row.innerHTML = `<span class="dot" style="background:${gColor[g.id]}"></span>${g.name} (${g.nodes.length})`;
+  row.onclick = () => {
+    graph.getNodes().forEach(n => graph.setItemState(n, "dim", n.getModel().gid !== g.id));
+  };
+  legend.appendChild(row);
+});
+legend.addEventListener("mouseleave", () => graph.getNodes().forEach(n => graph.setItemState(n, "dim", false)));
+
+// 悬停：普通节点高亮前后置链（含辅助辐射边）；中心节点高亮该主题全部节点
+function neighbors(id){
+  const hit = new Set([id]);
+  let changed = true;
+  while (changed){
+    changed = false;
+    allEdges.forEach(e => {
+      if (hit.has(e.source) && !hit.has(e.target)){ hit.add(e.target); changed = true; }
+      if (hit.has(e.target) && !hit.has(e.source)){ hit.add(e.source); changed = true; }
+    });
+  }
+  return hit;
+}
+graph.on("node:mouseenter", e => {
+  const m = e.item.getModel();
+  if (m.isCenter){
+    graph.getNodes().forEach(n => graph.setItemState(n, "dim", n.getModel().gid !== m.gid));
+  } else {
+    const hit = neighbors(m.id);
+    graph.getNodes().forEach(n => graph.setItemState(n, "dim", !hit.has(n.getModel().id)));
+  }
+});
+graph.on("node:mouseleave", () => graph.getNodes().forEach(n => graph.setItemState(n, "dim", false)));
+
+// 点击：知识点显示详情；中心显示主题概览
+function showDetailHTML(nd){
+  const up = [], down = [];
+  realEdges.forEach(e2 => { if (e2.target === nd.id) up.push(e2.source); if (e2.source === nd.id) down.push(e2.target); });
+  const rel = (ids) => ids.length ? ids.map(id => `<span onclick="focusNode('${id}')">${byId[id].label}</span>`).join("") : "<span>—</span>";
+  return `<h2>${nd.n}</h2>
+    <div class="kv"><span class="k">主题</span><span class="v">${nd.gname || ""}</span></div>
+    <h3>前置（先学）</h3><div class="rel">${rel(up)}</div>
+    <h3>后继（后学）</h3><div class="rel">${rel(down)}</div>`;
+}
+graph.on("node:click", e => {
+  const m = e.item.getModel();
+  let h;
+  if (m.isCenter){
+    const list = nodes.filter(n => n.gid === m.gid && !n.isCenter);
+    h = `<h2>${m.label}</h2>
+      <div class="kv"><span class="k">主题</span><span class="v">${list.length} 个知识点</span></div>
+      <h3>知识点</h3><div class="rel">${list.map(n => `<span onclick="focusNode('${n.id}')">${n.label}</span>`).join("")}</div>`;
+  } else {
+    h = showDetailHTML(m.data);
+  }
+  document.getElementById("body").innerHTML = h;
+  document.getElementById("detail").classList.add("open");
+});
+window.focusNode = id => {
+  graph.focusItem(id, true, { duration: 400 });
+  graph.getNodes().forEach(n => graph.setItemState(n, "dim", n.getModel().id !== id));
+  document.querySelectorAll("#body .rel span").forEach(s => {
+    s.style.background = s.textContent === byId[id].label ? "#ffe08a" : "#f1f3f8";
+  });
+};
+document.getElementById("close").onclick = () => document.getElementById("detail").classList.remove("open");
+
+window.addEventListener("resize", () => {
+  graph.changeSize(window.innerWidth, window.innerHeight);
+  graph.fitView([50, 50, 50, 50]);
+});
+</script>
+</body>
+</html>

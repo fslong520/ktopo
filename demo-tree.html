@@ -7,6 +7,8 @@
 <script src="lib/cytoscape.min.js"></script>
 <script src="lib/dagre.min.js"></script>
 <script src="lib/cytoscape-dagre.js"></script>
+<script src="lib/elkjs.bundle.min.js"></script>
+<script src="lib/cytoscape-elk.js"></script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;overflow:hidden;height:100vh;display:flex;background:#0f1115;}
@@ -2028,7 +2030,24 @@ function showGroup(gid){
   cy = cytoscape({
     container: document.getElementById("cy"),
     elements,
-    layout: { name: "dagre", rankDir: "TB", nodesep: 18, ranksep: 46, padding: 24 },
+    layout: {
+      name: "elk",
+      elk: {
+        algorithm: "layered",
+        "elk.direction": "DOWN",
+        "elk.spacing.nodeNode": 30,
+        "elk.layered.spacing.nodeNodeBetweenLayers": 56,
+        "elk.layered.spacing.edgeNodeBetweenLayers": 26,
+        "elk.layered.nodePlacement.strategy": "NETWORK_SIMPLEX",
+        "elk.edgeRouting": "ORTHOGONAL",
+        "elk.orthogonalRouting": true,
+        "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
+        "elk.algorithmRepair": false,
+        "elk.edgeRouting.splines": false,
+        "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES"
+      },
+      padding: 28
+    },
     wheelSensitivity: 0.2, minZoom: 0.05, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
@@ -2045,16 +2064,20 @@ function showGroup(gid){
         "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
         "shadow-blur": 16, "shadow-color": "rgba(0,0,0,.28)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "edge", style: {
-        "curve-style": "bezier", "width": 2, "line-color": "#8d99ad",
-        "target-arrow-shape": "none", "opacity": 1 } },
+        "curve-style": "straight", "width": 2, "line-color": "#8d99ad",
+        "target-arrow-shape": "triangle", "target-arrow-color": "#8d99ad",
+        "arrow-scale": 0.8, "opacity": 1,
+        "line-cap": "round" } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "bezier", "width": 2.6, "line-color": "data(color)", "opacity": .95 } },
+        "curve-style": "straight", "width": 2.6, "line-color": "data(color)",
+        "target-arrow-shape": "triangle", "target-arrow-color": "data(color)",
+        "arrow-scale": 0.9, "opacity": .95, "line-cap": "round" } },
       { selector: ".hl", style: { "border-width": 5, "border-color": "#3b82f6", "z-index": 20, "shadow-blur": 18, "shadow-color": "rgba(59,130,246,.35)" } },
     ],
   });
   cy.fit(undefined, 36);
   // 保底缩放：树高时防止缩到字不可读
-  if (cy.zoom() < 0.42) cy.zoom(0.42);
+  if (cy.zoom() < 0.5) cy.zoom(0.5);
   if (cy.zoom() > 1.1) cy.zoom(1.1);
   window.cy = cy; // 便于调试与外部扩展
   // 统计条：板块色点 + 名称 + 计数 + 难度条

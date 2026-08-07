@@ -9,7 +9,7 @@
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   body{font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;overflow:hidden;height:100vh;display:flex;background:#0f1115;}
-  #sidebar{flex:0 0 238px;background:linear-gradient(180deg,#fdfdff,#eef1f8);border-right:1px solid #e3e7f0;
+  #sidebar{flex:0 0 244px;background:linear-gradient(180deg,#fdfdff,#eef1f8);border-right:1px solid #e3e7f0;
     overflow-y:auto;padding:18px 14px;z-index:5;}
   #sidebar h3{font-size:13px;color:#8792a6;margin:0 6px 14px;font-weight:700;letter-spacing:.5px;
     display:flex;align-items:center;gap:7px;}
@@ -31,9 +31,11 @@
   .lv .chip{width:14px;height:14px;border-radius:5px;flex:0 0 auto;}
   #cy{flex:1;position:relative;overflow:hidden;
     background:radial-gradient(circle at 1px 1px,#dde3ef 1px,transparent 1px) 0 0/26px 26px,#f3f5fb;}
-  .lvlchip{position:absolute;padding:1px 8px;border-radius:9px;font-size:10px;font-weight:700;color:#fff;
-    z-index:30;box-shadow:0 3px 7px rgba(0,0,0,.2);pointer-events:none;letter-spacing:.5px;}
-  .stats{position:fixed;left:252px;top:18px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
+  .diffchip{position:absolute;display:flex;align-items:center;justify-content:center;
+    min-width:20px;height:20px;border-radius:10px;font-size:11px;font-weight:800;color:#fff;
+    z-index:30;box-shadow:0 3px 8px rgba(0,0,0,.25);pointer-events:none;
+    border:2px solid #fff;}
+  .stats{position:fixed;left:258px;top:18px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
     border:1px solid #e3e7f0;border-radius:14px;padding:9px 18px;font-size:12px;color:#55607a;z-index:6;
     box-shadow:0 6px 24px rgba(40,60,110,.12);display:flex;align-items:center;gap:12px;}
   .stats .dotbar{width:12px;height:12px;border-radius:4px;flex:0 0 auto;}
@@ -2004,17 +2006,13 @@ function showGroup(gid){
   const elements = [];
   // 板块名 = 思维导图根节点
   elements.push({ data: { id: "root-" + g.id, label: g.name, color: gColor[g.id], isRoot: true } });
-  // 知识点：本体=难度热力色，标签胶囊=级别色
+  // 知识点：白底卡片，描边=级别色，diff 徽章
   g.nodes.forEach(nd => {
-    const dc = diffColor(nd.diff || 1);
     const t = (nd.diff || 1);
     elements.push({
       data: {
         id: nd.id, label: nd.n, color: gColor[g.id],
-        fill: dc,
-        textcolor: t <= 5 ? "#1f2a38" : "#fff",
         lvcolor: LVCOLOR[nd.level] || "#7c8ea0",
-        lvname: (nd.level ? (LVCOLOR[nd.level] ? {j:"入门",s:"提高",n:"NOI"}[nd.level] : "") : "") || "",
         diff: t
       }
     });
@@ -2028,33 +2026,35 @@ function showGroup(gid){
   cy = cytoscape({
     container: document.getElementById("cy"),
     elements,
-    layout: { name: "dagre", rankDir: "TB", nodesep: 26, ranksep: 115, padding: 40 },
-    wheelSensitivity: 0.2, minZoom: 0.02, maxZoom: 3, boxSelectionEnabled: false,
+    layout: { name: "dagre", rankDir: "TB", nodesep: 20, ranksep: 52, padding: 24 },
+    wheelSensitivity: 0.2, minZoom: 0.05, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
-        "background-color": "data(fill)", "border-width": 0,
-        "shape": "round-rectangle", "width": 148, "height": 38, "label": "data(label)",
-        "text-wrap": "wrap", "text-max-width": 130, "font-size": 13, "font-weight": 700,
-        "color": "data(textcolor)",
+        "background-color": "#ffffff", "border-width": 3, "border-color": "data(lvcolor)",
+        "shape": "round-rectangle", "width": 150, "height": 42, "label": "data(label)",
+        "text-wrap": "wrap", "text-max-width": 128, "font-size": 13, "font-weight": 650,
+        "color": "#2b3546",
         "text-valign": "center", "text-halign": "center",
         "overlay-opacity": 0,
-        "shadow-blur": 10, "shadow-color": "rgba(0,0,0,.22)", "shadow-offset-x": 0, "shadow-offset-y": 3,
-        "border-color": "data(color)", "border-opacity": .35 } },
+        "shadow-blur": 14, "shadow-color": "rgba(30,42,70,.18)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "node[isRoot='true']", style: {
-        "background-color": "data(color)", "color": "#fff", "font-size": 18, "font-weight": 800,
-        "shape": "round-rectangle", "width": 176, "height": 46, "border-width": 0,
+        "background-color": "data(color)", "color": "#fff", "font-size": 19, "font-weight": 800,
+        "shape": "round-rectangle", "width": 184, "height": 50, "border-width": 0,
         "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
-        "shadow-blur": 18, "shadow-color": "rgba(0,0,0,.28)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
+        "shadow-blur": 22, "shadow-color": "rgba(0,0,0,.30)", "shadow-offset-x": 0, "shadow-offset-y": 5 } },
       { selector: "edge", style: {
-        "curve-style": "bezier", "width": 1.7, "line-color": "#c4ccda",
-        "target-arrow-shape": "none", "opacity": 0.8 } },
+        "curve-style": "bezier", "width": 1.6, "line-color": "#d3dae6",
+        "target-arrow-shape": "none", "opacity": 0.9 } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "bezier", "width": 2.6, "line-color": "data(color)", "opacity": .95 } },
+        "curve-style": "bezier", "width": 2.4, "line-color": "data(color)", "opacity": .85 } },
       { selector: ".dim", style: { "opacity": 0.12 } },
-      { selector: ".hl", style: { "border-width": 3.5, "border-color": "#ffd54f", "z-index": 20 } },
+      { selector: ".hl", style: { "border-width": 4, "border-color": "#ffd54f", "z-index": 20 } },
     ],
   });
-  cy.fit(undefined, 50);
+  cy.fit(undefined, 36);
+  // 保底缩放：树高时防止缩到字不可读
+  if (cy.zoom() < 0.42) cy.zoom(0.42);
+  if (cy.zoom() > 1.1) cy.zoom(1.1);
   window.cy = cy; // 便于调试与外部扩展
   // 统计条：板块色点 + 名称 + 计数 + 难度条
   const diffs = g.nodes.map(n => n.diff || 1);
@@ -2067,13 +2067,12 @@ function showGroup(gid){
        ${[...Array(10)].map((_,i)=>`<div style="width:5px;height:22px;border-radius:2px;background:${diffColor(i+1)}"></div>`).join("")}
      </div>`;
   bindInteractions();
-  renderLevelBadges();
+  renderDiffBadges();
 }
 
-/* ===== 级别角标（HTML 覆于节点右上角，随视口缩放平移） ===== */
-function renderLevelBadges(){
+/* ===== 难度徽章（HTML 覆于节点右上角，随视口缩放平移） ===== */
+function renderDiffBadges(){
   const cont = document.getElementById("cy");
-  cont.querySelectorAll(".lvlchip").forEach(e => e.remove());
   const layer = document.createElement("div");
   layer.id = "badgelayer";
   layer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:9;";
@@ -2083,15 +2082,13 @@ function renderLevelBadges(){
     cy.nodes().filter(n => !n.data("isRoot")).forEach(n => {
       const p = n.renderedPosition();
       const w = n.renderedOuterWidth();
-      const lv = n.data("lvcolor");
-      const nm = n.data("lvname");
-      if (!nm) return;
+      const df = n.data("diff") || 1;
       const b = document.createElement("span");
-      b.className = "lvlchip";
-      b.style.background = lv;
-      b.style.left = (p.x + w/2 - 26) + "px";
-      b.style.top  = (p.y - 26) + "px";
-      b.textContent = nm;
+      b.className = "diffchip";
+      b.style.background = diffColor(df);
+      b.style.left = (p.x + w/2 - 12) + "px";
+      b.style.top  = (p.y - 24) + "px";
+      b.textContent = df;
       layer.appendChild(b);
     });
   };

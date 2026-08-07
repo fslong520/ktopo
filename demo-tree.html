@@ -2077,6 +2077,19 @@ function showGroup(gid){
   // 保底缩放：树高时防止缩到字不可读
   if (cy.zoom() < 0.5) cy.zoom(0.5);
   if (cy.zoom() > 1.1) cy.zoom(1.1);
+  // 均衡：根节点置于视口水平中心略左、垂直上部，两侧分支均衡展开
+  cy.one("layoutstop render", () => {
+    const vw = document.getElementById("cy").clientWidth;
+    const vh = document.getElementById("cy").clientHeight;
+    const root = cy.getElementById("root-" + g.id);
+    if (!root) return;
+    const rp = root.renderedPosition();
+    const pan = cy.pan();
+    cy.pan({
+      x: pan.x + (vw * 0.42 - rp.x),
+      y: pan.y + (vh * 0.18 - rp.y)
+    });
+  });
   window.cy = cy; // 便于调试与外部扩展
   // 统计条：板块色点 + 名称 + 计数 + 难度条
   const diffs = g.nodes.map(n => n.diff || 1);

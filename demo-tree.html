@@ -2062,14 +2062,14 @@ function showGroup(gid){
         "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
         "shadow-blur": 16, "shadow-color": "rgba(0,0,0,.28)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "edge", style: {
-        "curve-style": "unbundled-bezier", "width": 2, "line-color": "#8d99ad",
+        "curve-style": "bezier", "width": 2, "line-color": "#8d99ad",
         "target-arrow-shape": "triangle", "target-arrow-color": "#8d99ad",
         "arrow-scale": 0.8, "opacity": 1,
-        "line-cap": "round" } },
+        "line-cap": "round", "control-point-distance": 22, "control-point-weight": 0.5 } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "unbundled-bezier", "width": 2.6, "line-color": "data(color)",
+        "curve-style": "taxi", "width": 2.6, "line-color": "data(color)",
         "target-arrow-shape": "triangle", "target-arrow-color": "data(color)",
-        "arrow-scale": 0.9, "opacity": .95, "line-cap": "round" } },
+        "arrow-scale": 0.9, "opacity": .95, "line-cap": "round", "taxi-direction": "horizontal", "taxi-turn": 14 } },
       { selector: ".hl", style: { "border-width": 5, "border-color": "#3b82f6", "z-index": 20, "shadow-blur": 18, "shadow-color": "rgba(59,130,246,.35)" } },
     ],
   });
@@ -2089,21 +2089,16 @@ function showGroup(gid){
       x: pan.x + (vw * 0.42 - rp.x),
       y: pan.y + (vh * 0.18 - rp.y)
     });
-    // 贝塞尔控制点：方向依源→目标水平位移，左右均衡弯曲
+    // bezier 曲线：控制点距离奇偶交替，左右双侧均衡弯曲
+    let alt = 0;
     cy.edges().forEach(e => {
       if (e.data("isRootEdge")) return;
-      const s = e.source().renderedPosition(), t = e.target().renderedPosition();
-      const dx = t.x - s.x, dy = t.y - s.y;
-      let side;
-      if (Math.abs(dx) < 0.001) {
-        // 纯垂直边：依边 id 交替左右
-        side = (parseInt(e.id().replace(/\D/g, "")) || 0) % 2 === 0 ? 1 : -1;
-      } else {
-        side = dx > 0 ? 1 : -1; // 目标在右→右弯，在左→左弯
-      }
-      e.data({ "control-point-distances": [26 * side], "control-point-weights": [0.5] });
+      e.style({
+        "control-point-distance": (alt % 2 === 0 ? 24 : -24),
+        "control-point-weight": 0.5
+      });
+      alt++;
     });
-    cy.style().update(); // 应用新控制点
   });
   window.cy = cy; // 便于调试与外部扩展
   // 统计条：板块色点 + 名称 + 计数 + 难度条

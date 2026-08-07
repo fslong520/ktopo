@@ -31,11 +31,11 @@
   .lvrow .lv{display:flex;align-items:center;gap:8px;font-size:12px;color:#4a5a70;}
   .lv .chip{width:14px;height:14px;border-radius:5px;flex:0 0 auto;}
   #cy{flex:1;position:relative;overflow:hidden;
-    background:radial-gradient(circle at 1px 1px,#dde3ef 1px,transparent 1px) 0 0/26px 26px,#f3f5fb;}
+    background:linear-gradient(160deg,#f7f9fd 0%,#eef1f9 55%,#e7ebf6 100%);}
   .diffchip{position:absolute;display:flex;align-items:center;justify-content:center;
-    min-width:20px;height:20px;border-radius:10px;font-size:11px;font-weight:800;color:#fff;
-    z-index:30;box-shadow:0 3px 8px rgba(0,0,0,.25);pointer-events:none;
-    border:2px solid #fff;}
+    min-width:22px;height:22px;border-radius:11px;font-size:11px;font-weight:800;color:#fff;
+    z-index:30;box-shadow:0 3px 8px rgba(0,0,0,.22);pointer-events:none;
+    border:2px solid #fff;transform:translate(-50%,-50%);}
   .stats{position:fixed;left:258px;top:18px;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);
     border:1px solid #e3e7f0;border-radius:14px;padding:9px 18px;font-size:12px;color:#55607a;z-index:6;
     box-shadow:0 6px 24px rgba(40,60,110,.12);display:flex;align-items:center;gap:12px;}
@@ -2007,13 +2007,14 @@ function showGroup(gid){
   const elements = [];
   // 板块名 = 思维导图根节点
   elements.push({ data: { id: "root-" + g.id, label: g.name, color: gColor[g.id], isRoot: true } });
-  // 知识点：白底卡片，描边=级别色，diff 徽章
+  // 知识点：白底卡片 + 级别色描边 + diff 徽章
   g.nodes.forEach(nd => {
     const t = (nd.diff || 1);
+    const lc = LVCOLOR[nd.level] || "#7c8ea0";
     elements.push({
       data: {
         id: nd.id, label: nd.n, color: gColor[g.id],
-        lvcolor: LVCOLOR[nd.level] || "#7c8ea0",
+        lvcolor: lc,
         diff: t
       }
     });
@@ -2027,29 +2028,33 @@ function showGroup(gid){
   cy = cytoscape({
     container: document.getElementById("cy"),
     elements,
-    layout: { name: "dagre", rankDir: "TB", nodesep: 20, ranksep: 52, padding: 24 },
+    layout: { name: "dagre", rankDir: "TB", nodesep: 18, ranksep: 46, padding: 24 },
     wheelSensitivity: 0.2, minZoom: 0.05, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
-        "background-color": "#ffffff", "border-width": 3, "border-color": "data(lvcolor)",
+        "background-color": "#ffffff", "border-width": 0,
         "shape": "round-rectangle", "width": 150, "height": 42, "label": "data(label)",
-        "text-wrap": "wrap", "text-max-width": 128, "font-size": 13, "font-weight": 650,
+        "text-wrap": "wrap", "text-max-width": 132, "font-size": 13, "font-weight": 650,
         "color": "#2b3546",
         "text-valign": "center", "text-halign": "center",
         "overlay-opacity": 0,
-        "shadow-blur": 14, "shadow-color": "rgba(30,42,70,.18)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
+        "shadow-blur": 10, "shadow-color": "rgba(30,42,70,.14)", "shadow-offset-x": 0, "shadow-offset-y": 3,
+        "background-opacity": 0.9,
+        "border-width": 2.5, "border-color": "data(lvcolor)", "border-opacity": .45 } },
       { selector: "node[isRoot='true']", style: {
-        "background-color": "data(color)", "color": "#fff", "font-size": 19, "font-weight": 800,
-        "shape": "round-rectangle", "width": 184, "height": 50, "border-width": 0,
+        "background-color": "data(color)", "color": "#fff", "font-size": 18, "font-weight": 800,
+        "shape": "round-rectangle", "width": 184, "height": 48, "border-width": 0,
         "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
-        "shadow-blur": 22, "shadow-color": "rgba(0,0,0,.30)", "shadow-offset-x": 0, "shadow-offset-y": 5 } },
+        "shadow-blur": 16, "shadow-color": "rgba(0,0,0,.22)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "edge", style: {
-        "curve-style": "bezier", "width": 1.6, "line-color": "#d3dae6",
-        "target-arrow-shape": "none", "opacity": 0.9 } },
+        "curve-style": "bezier", "width": 1.5, "line-color": "#d8deea",
+        "target-arrow-shape": "none", "opacity": 0.95 } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "bezier", "width": 2.4, "line-color": "data(color)", "opacity": .85 } },
-      { selector: ".dim", style: { "opacity": 0.12 } },
-      { selector: ".hl", style: { "border-width": 4, "border-color": "#ffd54f", "z-index": 20 } },
+        "curve-style": "bezier", "width": 2.2, "line-color": "data(color)", "opacity": .75,
+        "line-style": "dotted" } },
+      { selector: ".dim", style: { "opacity": 0.35 } },
+      { selector: ".hl", style: { "shadow-blur": 22, "shadow-color": "rgba(80,120,255,.35)", "z-index": 20, "background-color": "#fff" } },
+      { selector: ".hledge", style: { "line-color": "#7c96e0", "width": 2.4, "opacity": 1 } },
     ],
   });
   cy.fit(undefined, 36);
@@ -2071,26 +2076,32 @@ function showGroup(gid){
   renderDiffBadges();
 }
 
-/* ===== 难度徽章（HTML 覆于节点右上角，随视口缩放平移） ===== */
+/* ===== 难度徽章：持久 DOM，render 只更新 transform（不重建，避免闪烁） ===== */
 function renderDiffBadges(){
   const cont = document.getElementById("cy");
+  cont.querySelectorAll("#badgelayer").forEach(e => e.remove());
   const layer = document.createElement("div");
   layer.id = "badgelayer";
   layer.style.cssText = "position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:9;";
   cont.appendChild(layer);
+  // 一次性创建全部徽章
+  const badges = [];
+  cy.nodes().filter(n => !n.data("isRoot")).forEach(n => {
+    const df = n.data("diff") || 1;
+    const b = document.createElement("span");
+    b.className = "diffchip";
+    b.style.background = diffColor(df);
+    b.textContent = df;
+    layer.appendChild(b);
+    badges.push({ node: n, el: b });
+  });
+  // render 时仅更新位置（CSS transform，无重建）
   const place = () => {
-    layer.innerHTML = "";
-    cy.nodes().filter(n => !n.data("isRoot")).forEach(n => {
-      const p = n.renderedPosition();
-      const w = n.renderedOuterWidth();
-      const df = n.data("diff") || 1;
-      const b = document.createElement("span");
-      b.className = "diffchip";
-      b.style.background = diffColor(df);
-      b.style.left = (p.x + w/2 - 12) + "px";
-      b.style.top  = (p.y - 24) + "px";
-      b.textContent = df;
-      layer.appendChild(b);
+    badges.forEach(({ node, el }) => {
+      const p = node.renderedPosition();
+      const w = node.renderedOuterWidth();
+      el.style.left = (p.x + w/2 - 8) + "px";
+      el.style.top  = (p.y - 22) + "px";
     });
   };
   cy.on("render", place);
@@ -2101,12 +2112,17 @@ function renderDiffBadges(){
 function bindInteractions(){
   cy.on("mouseover", "node", evt => {
     const n = evt.target;
-    if (n.data("isRoot")){ cy.elements().removeClass("dim hl"); return; }
+    if (n.data("isRoot")){ cy.elements().removeClass("dim hl hledge"); return; }
     const hit = neighbors(n.id());
-    cy.elements().removeClass("hl");
+    cy.elements().removeClass("hl hledge");
+    // 高亮关联节点（前后置链），其余柔和淡出
     cy.nodes().forEach(x => x.addClass(hit.has(x.id()) ? "hl" : "dim"));
+    // 高亮连接边的子集：只突出与命中节点直接相连的边
+    cy.edges().forEach(e => {
+      if (hit.has(e.source().id()) && hit.has(e.target().id())) e.addClass("hledge");
+    });
   });
-  cy.on("mouseout", "node", () => cy.elements().removeClass("dim hl"));
+  cy.on("mouseout", "node", () => cy.elements().removeClass("dim hl hledge"));
   cy.on("tap", "node", evt => {
     const n = evt.target;
     if (!n.data("isRoot")) showDetail(n.id());

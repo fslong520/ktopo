@@ -2035,41 +2035,39 @@ function showGroup(gid){
       elk: {
         algorithm: "layered",
         "elk.direction": "DOWN",
-        "elk.spacing.nodeNode": 30,
-        "elk.layered.spacing.nodeNodeBetweenLayers": 56,
-        "elk.layered.spacing.edgeNodeBetweenLayers": 26,
+        "elk.spacing.nodeNode": 22,
+        "elk.layered.spacing.nodeNodeBetweenLayers": 48,
+        "elk.layered.spacing.edgeNodeBetweenLayers": 22,
         "elk.layered.nodePlacement.strategy": "NETWORK_SIMPLEX",
-        "elk.edgeRouting": "ORTHOGONAL",
-        "elk.orthogonalRouting": true,
+        "elk.edgeRouting": "SPLINES",
         "elk.layered.crossingMinimization.strategy": "LAYER_SWEEP",
         "elk.algorithmRepair": false,
-        "elk.edgeRouting.splines": false,
         "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES"
       },
-      padding: 28
+      padding: 24
     },
     wheelSensitivity: 0.2, minZoom: 0.05, maxZoom: 3, boxSelectionEnabled: false,
     style: [
       { selector: "node", style: {
         "background-color": "#ffffff", "border-width": 3, "border-color": "data(lvcolor)",
-        "shape": "round-rectangle", "width": 152, "height": 44, "label": "data(label)",
-        "text-wrap": "wrap", "text-max-width": 130, "font-size": 14, "font-weight": 700,
+        "shape": "round-rectangle", "width": 120, "height": 40, "label": "data(label)",
+        "text-wrap": "wrap", "text-max-width": 106, "font-size": 12.5, "font-weight": 700,
         "color": "#1c2536",
         "text-valign": "center", "text-halign": "center",
         "overlay-opacity": 0,
         "shadow-blur": 8, "shadow-color": "rgba(30,42,70,.18)", "shadow-offset-x": 0, "shadow-offset-y": 3 } },
       { selector: "node[isRoot='true']", style: {
-        "background-color": "data(color)", "color": "#fff", "font-size": 20, "font-weight": 800,
-        "shape": "round-rectangle", "width": 190, "height": 52, "border-width": 0,
+        "background-color": "data(color)", "color": "#fff", "font-size": 19, "font-weight": 800,
+        "shape": "round-rectangle", "width": 178, "height": 50, "border-width": 0,
         "text-valign": "center", "text-halign": "center", "overlay-opacity": 0,
         "shadow-blur": 16, "shadow-color": "rgba(0,0,0,.28)", "shadow-offset-x": 0, "shadow-offset-y": 4 } },
       { selector: "edge", style: {
-        "curve-style": "straight", "width": 2, "line-color": "#8d99ad",
+        "curve-style": "unbundled-bezier", "width": 2, "line-color": "#8d99ad",
         "target-arrow-shape": "triangle", "target-arrow-color": "#8d99ad",
         "arrow-scale": 0.8, "opacity": 1,
         "line-cap": "round" } },
       { selector: "edge[isRootEdge='true']", style: {
-        "curve-style": "straight", "width": 2.6, "line-color": "data(color)",
+        "curve-style": "unbundled-bezier", "width": 2.6, "line-color": "data(color)",
         "target-arrow-shape": "triangle", "target-arrow-color": "data(color)",
         "arrow-scale": 0.9, "opacity": .95, "line-cap": "round" } },
       { selector: ".hl", style: { "border-width": 5, "border-color": "#3b82f6", "z-index": 20, "shadow-blur": 18, "shadow-color": "rgba(59,130,246,.35)" } },
